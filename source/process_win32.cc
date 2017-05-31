@@ -1,6 +1,9 @@
 
 #include "process.h"
 
+#include <stdexcept>
+#include <string>
+
 namespace ps {
 namespace native{
 
@@ -15,7 +18,8 @@ string GetErrorMessage(::DWORD error)
     ::LPSTR buffer = nullptr;
     ::FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | 
                      FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, error, 
-                     MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), buffer, 0, nullptr);
+                     MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), 
+                     reinterpret_cast<LPSTR>(&buffer), 0, nullptr);
 
     string message = "Unknown error";
     if (nullptr != buffer) {
@@ -37,33 +41,52 @@ ProcessList List()
 {
     ProcessList processes;
 
-    ::HANDLE snapshot32 = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if (INVALID_HANDLE_VALUE == snapshot32) {
+    ::HANDLE snapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (INVALID_HANDLE_VALUE == snapshot) {
         throw runtime_error(GetLastErrorMessage());
     }
 
-    ::PROCESSENTRY32 pe32 = { 0 };
-    pe32.dwSize = sizeof(pe32);
-    if (FALSE == ::Process32First(snapshot32, &pe32)) {
-        ::CloseHandle(snapshot32);
+    ::PROCESSENTRY32 pe = { 0 };
+    pe.dwSize = sizeof(pe);
+    if (FALSE == ::Process32First(snapshot, &pe)) {
+        ::CloseHandle(snapshot);
         throw runtime_error(GetLastErrorMessage());
     }
 
     do {
         Process process;
-        process.pid = pe32.th32ProcessID;
-        process.ppid = pe32.th32ParentProcessID;
-        process.exe = pe32.szExeFile;
-        process.priority = pe32.pcPriClassBase;
-        process.threads = pe32.cntThreads;
+        process.pid = static_cast<uint32_t>(pe.th32ProcessID);
+        process.parent = static_cast<uint32_t>(pe.th32ParentProcessID);
+        process.priority = static_cast<uint32_t>(pe.pcPriClassBase);
+        process.threads = static_cast<uint32_t>(pe.cntThreads);
+
+        ::StringCchCopyA(&process.name[0], MAX_PATH, &pe.szExeFile[0]);
 
         processes.push_back(process);
     }
-    while (FALSE != ::Process32Next(snapshot32, &pe32));
+    while (FALSE != ::Process32Next(snapshot, &pe));
 
-    ::CloseHandle(snapshot32);
+    ::CloseHandle(snapshot);
 
     return processes;
+}
+
+void Kill(uint32_t pid, int32_t code, uint32_t timeout)
+{
+    ::HANDLE process = ::OpenProcess(PROCESS_TERMINATE, FALSE, static_cast<::DWORD>(pid));
+    if (NULL == process) {
+        throw runtime_error(GetLastErrorMessage());
+    }
+
+    ::DWORD result = WAIT_OBJECT_0;
+    while (WAIT_OBJECT_0 == result) {
+        result = ::WaitForSingleObject(process, static_cast<::DWORD>(timeout));
+        if (FALSE == ::TerminateProcess(process, static_cast<::UINT>(code))) {
+            throw runtime_error(GetLastErrorMessage());
+        }
+    }
+    
+    ::CloseHandle(process);
 }
 
 } // native namespace
