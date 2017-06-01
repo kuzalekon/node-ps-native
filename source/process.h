@@ -22,11 +22,22 @@
 namespace ps {
 namespace native {
 
+enum ProcessProperties
+{
+    None = 0,
+    Pid = 1,
+    Name = 2,
+    Parent = 4,
+    Priority = 8,
+    Threads = 16,
+    All = 31
+};
+
 typedef struct
 {
     uint32_t pid = 0;
-    uint32_t parent = 0;
     char name[MAX_PATH] = { '\0' };
+    uint32_t parent = 0;
     uint32_t priority = 0;
     uint32_t threads = 0;
 } Process;
@@ -36,7 +47,7 @@ typedef std::list<Process> ProcessList;
 ProcessList List();
 //ProcessList Find(const std::string& name);
 //ProcessList Find(pid_t pid);
-void Kill(uint32_t pid, int32_t code, uint32_t timeout = 1000);
+void Kill(uint32_t pid, int32_t signal);
 
 } // native namespace
 } // ps namespace

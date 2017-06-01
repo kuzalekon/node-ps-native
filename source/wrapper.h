@@ -14,7 +14,9 @@ namespace wrapper {
 class ListWorker final : public Nan::AsyncWorker
 {
 public:
-    ListWorker(Nan::Callback* callback) : Nan::AsyncWorker(callback) {};
+    ListWorker(Nan::Callback* callback, native::ProcessProperties props) 
+        : Nan::AsyncWorker(callback)
+        , props_(props) {};
     ~ListWorker() = default;
 
     void Execute() override;
@@ -23,17 +25,17 @@ public:
     void HandleErrorCallback() override;
 
 private:
+    native::ProcessProperties props_;
     native::ProcessList processes_;
 }; // ListWorker class
 
 class KillWorker final : public Nan::AsyncWorker
 {
 public:
-    KillWorker(Nan::Callback* callback, uint32_t pid, int32_t code, uint32_t timeout) 
+    KillWorker(Nan::Callback* callback, uint32_t pid, int32_t signal = 0) 
         : Nan::AsyncWorker(callback)
         , pid_(pid)
-        , code_(code)
-        , timeout_(timeout) {};
+        , signal_(signal) {};
     ~KillWorker() = default;
 
     void Execute() override;
@@ -43,8 +45,7 @@ public:
 
 private:
     uint32_t pid_;
-    int32_t code_;
-    uint32_t timeout_;
+    int32_t signal_;
 }; // KillWorker class
 
 NAN_METHOD(List);

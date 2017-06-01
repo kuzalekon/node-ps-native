@@ -15,7 +15,7 @@ namespace { // anonymous
 
 string GetErrorMessage(::DWORD error)
 {
-    ::LPSTR buffer = nullptr;
+    LPSTR buffer = nullptr;
     ::FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | 
                      FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, error, 
                      MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), 
@@ -41,12 +41,12 @@ ProcessList List()
 {
     ProcessList processes;
 
-    ::HANDLE snapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    HANDLE snapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (INVALID_HANDLE_VALUE == snapshot) {
         throw runtime_error(GetLastErrorMessage());
     }
 
-    ::PROCESSENTRY32 pe = { 0 };
+    PROCESSENTRY32 pe = { 0 };
     pe.dwSize = sizeof(pe);
     if (FALSE == ::Process32First(snapshot, &pe)) {
         ::CloseHandle(snapshot);
@@ -71,17 +71,18 @@ ProcessList List()
     return processes;
 }
 
-void Kill(uint32_t pid, int32_t code, uint32_t timeout)
+void Kill(uint32_t pid, int32_t signal)
 {
-    ::HANDLE process = ::OpenProcess(PROCESS_TERMINATE, FALSE, static_cast<::DWORD>(pid));
+    HANDLE process = ::OpenProcess(PROCESS_TERMINATE, FALSE, static_cast<::DWORD>(pid));
     if (NULL == process) {
         throw runtime_error(GetLastErrorMessage());
     }
 
-    ::DWORD result = WAIT_OBJECT_0;
+    static const DWORD timeout = 1000;
+    DWORD result = WAIT_OBJECT_0;
     while (WAIT_OBJECT_0 == result) {
-        result = ::WaitForSingleObject(process, static_cast<::DWORD>(timeout));
-        if (FALSE == ::TerminateProcess(process, static_cast<::UINT>(code))) {
+        result = ::WaitForSingleObject(process,timeout);
+        if (FALSE == ::TerminateProcess(process, static_cast<::UINT>(signal))) {
             throw runtime_error(GetLastErrorMessage());
         }
     }
