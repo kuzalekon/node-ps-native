@@ -1,6 +1,8 @@
 
 #include "wrapper.h"
 
+#include <cstring>
+
 #define JS_STR(str) Nan::New<v8::String>((str)).ToLocalChecked()
 #define JS_UINT(num) Nan::New<v8::Uint32>((num))
 
@@ -125,11 +127,11 @@ NAN_METHOD(List)
         uint8_t props = ProcessProperties::None;
         for (uint32_t i = 0; i < options->Length(); ++i) {
             const String::Utf8Value value(Nan::Get(options, i).ToLocalChecked().As<String>());
-            if (0 == std::strcmp(*value, "pid")) props |= ProcessProperties::Pid;
-            if (0 == std::strcmp(*value, "name")) props |= ProcessProperties::Name;
-            if (0 == std::strcmp(*value, "parent")) props |= ProcessProperties::Parent;
-            if (0 == std::strcmp(*value, "priority")) props |= ProcessProperties::Priority;
-            if (0 == std::strcmp(*value, "threads")) props |= ProcessProperties::Threads;
+            if (0 == _strcmpi(*value, "pid")) props |= ProcessProperties::Pid;
+            if (0 == _strcmpi(*value, "name")) props |= ProcessProperties::Name;
+            if (0 == _strcmpi(*value, "parent")) props |= ProcessProperties::Parent;
+            if (0 == _strcmpi(*value, "priority")) props |= ProcessProperties::Priority;
+            if (0 == _strcmpi(*value, "threads")) props |= ProcessProperties::Threads;
         }
         
         Nan::AsyncQueueWorker(new ListWorker(callback, static_cast<ProcessProperties>(props)));
