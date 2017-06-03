@@ -135,7 +135,7 @@ NAN_METHOD(List)
         Nan::AsyncQueueWorker(new ListWorker(callback, static_cast<ProcessProperties>(props)));
     }
     else {
-        return Nan::ThrowTypeError("Invalid arguments");
+        Nan::ThrowTypeError("Invalid arguments");
     }
 }
 
@@ -160,7 +160,7 @@ NAN_METHOD(Kill)
         Nan::AsyncQueueWorker(new KillWorker(callback, pid, signal));
     }
     else {
-        return Nan::ThrowTypeError("Invalid arguments");
+        Nan::ThrowTypeError("Invalid arguments");
     }
 }
 

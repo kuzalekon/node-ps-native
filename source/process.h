@@ -36,8 +36,8 @@ enum ProcessProperties
 typedef struct
 {
     uint32_t pid = 0;
-    char name[MAX_PATH] = { '\0' };
     uint32_t parent = 0;
+    char name[MAX_PATH] = { '\0' };
     uint32_t priority = 0;
     uint32_t threads = 0;
 } Process;
@@ -47,7 +47,7 @@ typedef std::list<Process> ProcessList;
 ProcessList List();
 //ProcessList Find(const std::string& name);
 //ProcessList Find(pid_t pid);
-void Kill(uint32_t pid, int32_t signal);
+void Kill(uint32_t pid, int32_t code = 0);
 
 } // native namespace
 } // ps namespace

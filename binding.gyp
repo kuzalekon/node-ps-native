@@ -5,6 +5,7 @@
 
             "sources": [
                 "source/process.h",
+				"source/helpers.h",
                 "source/wrapper.h",
                 "source/wrapper.cc",
                 "source/binding.cc"
@@ -23,20 +24,20 @@
                 ["OS == 'win'",
                     {
                         "defines": [
-                            "PS_WIN32"
+                            "PS_WIN32",
+							"UNICODE",
+							"_UNICODE"
                         ],
 
                         "sources": [
-                            "source/process_win32.cc"
-                        ],
-
-                        "libraries": [
-                            "-lwtsapi32"
+                            "source/process_win32.cc",
+							"source/helpers_win32.cc"
                         ],
 
                         "msvs_settings": {
                             "VCCLCompilerTool": {
-                                "ExceptionHandling": "2",  # /EHsc
+								"WarningLevel": 3,
+                                "ExceptionHandling": 2,  # /EHsc
                             },
                         }
                     }
@@ -45,11 +46,12 @@
                 ["OS == 'linux'",
                     {
                         "defines": [
-                            "PS_UNIX"
+                            "PS_LINUX"
                         ],
 
                         "sources": [
-                            "source/process_unix.cc"
+                            "source/process_linux.cc",
+							"source/helpers_linux.cc"
                         ]
                     }
                  ]
