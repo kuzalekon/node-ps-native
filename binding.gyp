@@ -5,7 +5,6 @@
 
             "sources": [
                 "sources/process.h",
-				"sources/helpers.h",
                 "sources/wrapper.h",
                 "sources/wrapper.cc",
                 "sources/binding.cc"
