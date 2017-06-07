@@ -4,11 +4,11 @@
             "target_name": "ps-native",
 
             "sources": [
-                "source/process.h",
-				"source/helpers.h",
-                "source/wrapper.h",
-                "source/wrapper.cc",
-                "source/binding.cc"
+                "sources/process.h",
+				"sources/helpers.h",
+                "sources/wrapper.h",
+                "sources/wrapper.cc",
+                "sources/binding.cc"
             ],
 
             "cflags": [
@@ -30,8 +30,7 @@
                         ],
 
                         "sources": [
-                            "source/process_win32.cc",
-							"source/helpers_win32.cc"
+                            "sources/process_win32.cc"
                         ],
 
                         "msvs_settings": {
@@ -50,8 +49,7 @@
                         ],
 
                         "sources": [
-                            "source/process_linux.cc",
-							"source/helpers_linux.cc"
+                            "sources/process_linux.cc"
                         ]
                     }
                  ]

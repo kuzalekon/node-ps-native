@@ -1,3 +1,3 @@
-# node-ps-native
+# ps-native
 
-Native binding for Node.js for manipulating processes
+Native Node.js binding for enumerate, find and kill processes by OS specific API

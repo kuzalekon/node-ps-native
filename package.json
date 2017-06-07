@@ -1,7 +1,7 @@
 {
   "name": "ps-native",
   "version": "0.0.1",
-  "description": "Cross-platform (Windows & Linux) Node.js addone to natively enum, find and kill launched processes",
+  "description": "Native binding for Node.js for manipulating processes",
   "license": "MIT",
   "main": "index.js",
   "gypfile": true,
@@ -31,13 +31,16 @@
     "native",
     "windows",
     "unix",
-    "linux"
+    "linux",
+    "pm2",
+    "forever"
   ],
   "author": {
     "name": "Kuznetsov Aleksey (kalexey89)",
     "email": "kyznecov.alexey@gmail.com"
   },
   "dependencies": {
+    "bindings": "^1.2.1",
     "nan": "^2.6.2",
     "prebuild-install": "^2.1.2"
   }
