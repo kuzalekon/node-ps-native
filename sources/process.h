@@ -53,10 +53,10 @@ public:
 public:
     static List Enum(uint8_t infoset);
 
-    static bool Find(uint32_t pid);
-    static bool Find(const std::string& mask);
+    static bool Find(uint32_t pid, Info& result, uint8_t infoset = FullInfo);
+    static bool Find(const std::string& mask, List& result, uint8_t infoset = FullInfo);
 
-    static void Kill(uint32_t pid, uint32_t code = 0);
+    static void Kill(uint32_t pid, int32_t code = 0);
 }; // class Process
 
 } // ps namespace

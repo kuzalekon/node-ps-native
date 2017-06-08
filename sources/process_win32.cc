@@ -63,25 +63,93 @@ Process::List Process::Enum(uint8_t infoset)
 
     List processes;
     do {
-        Info info = { 0 };
+        Info process = { 0 };
         if (0 != (infoset & Pid))
-            info.pid = static_cast<uint32_t>(entry.th32ProcessID);
+            process.pid = static_cast<uint32_t>(entry.th32ProcessID);
         if (0 != (infoset & Parent))
-            info.parent = static_cast<uint32_t>(entry.th32ParentProcessID);
+            process.parent = static_cast<uint32_t>(entry.th32ParentProcessID);
         if (0 != (infoset & Name))
-            info.name = ws2utf8(entry.szExeFile);
+            process.name = ws2utf8(entry.szExeFile);
         if (0 != (infoset & Priority))
-            info.priority = static_cast<uint32_t>(entry.pcPriClassBase);
+            process.priority = static_cast<uint32_t>(entry.pcPriClassBase);
         if (0 != (infoset & Threads))
-            info.threads = static_cast<uint32_t>(entry.cntThreads);
+            process.threads = static_cast<uint32_t>(entry.cntThreads);
 
-        processes.push_back(info);
+        processes.push_back(process);
     }
     while (FALSE != ::Process32NextW(snapshot, &entry));
 
     ::CloseHandle(snapshot);
 
     return processes;
+}
+
+bool Process::Find(uint32_t pid, Info& process, uint8_t infoset)
+{
+    List snapshot = Enum(Pid | infoset);
+    for (auto entry : snapshot) {
+        if (pid == entry.pid) {
+            if (0 != (infoset & Pid))
+                process.pid = entry.pid;
+            if (0 != (infoset & Parent))
+                process.parent = entry.parent;
+            if (0 != (infoset & Name))
+                process.name = entry.name;
+            if (0 != (infoset & Priority))
+                process.priority = entry.priority;
+            if (0 != (infoset & Threads))
+                process.threads = entry.threads;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Process::Find(const std::string& mask, List& processes, uint8_t infoset)
+{
+    bool found = false;
+    List snapshot = Enum(Name | infoset);
+    for (auto entry : snapshot) {
+        if (true == std::regex_match(entry.name, std::regex(mask))) {
+            Info process = { 0 };
+            if (0 != (infoset & Pid))
+                process.pid = entry.pid;
+            if (0 != (infoset & Parent))
+                process.parent = entry.parent;
+            if (0 != (infoset & Name))
+                process.name = entry.name;
+            if (0 != (infoset & Priority))
+                process.priority = entry.priority;
+            if (0 != (infoset & Threads))
+                process.threads = entry.threads;
+
+            processes.push_back(process);
+            found = true;
+        }
+    }
+
+    return found;
+}
+
+void Process::Kill(uint32_t pid, int32_t code)
+{
+    HANDLE process = ::OpenProcess(PROCESS_TERMINATE, FALSE, static_cast<::DWORD>(pid));
+    if (NULL == process) {
+        throw runtime_error(GetLastErrorMessage());
+    }
+
+    static const DWORD timeout = 3000; // 3 sec
+    DWORD result = WAIT_OBJECT_0;
+    while (WAIT_OBJECT_0 == result) {
+        result = ::WaitForSingleObject(process, timeout);
+        if (FALSE == ::TerminateProcess(process, static_cast<UINT>(code))) {
+            throw runtime_error(GetLastErrorMessage());
+        }
+    }
+
+    ::CloseHandle(process);
 }
 
 } // ps namespace
