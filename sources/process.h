@@ -9,13 +9,22 @@
 #include <windows.h>
 #include <tlhelp32.h>
 #elif defined(PS_LINUX)
+#include <unistd.h>
+#include <errno.h>
+#include <dirent.h>
+#include <libgen.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #endif
 
 #include <cstdint>
 #include <string>
 #include <list>
 
-namespace ps 
+namespace ps
 {
 
 class Process

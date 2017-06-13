@@ -10,9 +10,13 @@
                 "sources/binding.cc"
             ],
 
-            "cflags": [
-                "-std=c++11",
-                "-stdlib=libc++"
+            "cflags_cc!": [
+                "-fno-exceptions"
+            ],
+
+            "cflags_cc+": [
+                "-fexceptions",
+                "-std=c++11"
             ],
 
             "include_dirs": [
@@ -43,6 +47,12 @@
 
                 ["OS == 'linux'",
                     {
+                        "cflags_cc+": [
+                            "-Wno-missing-field-initializers",
+                            "-Wno-missing-braces",
+                            "-Wno-unused-result"
+                        ],
+
                         "defines": [
                             "PS_LINUX"
                         ],

@@ -72,11 +72,11 @@ uint8_t UnpackInfoSet(const Local<Array>& jsinfoset)
     uint8_t infoset = Process::EmptyInfo;
     for (uint32_t i = 0; i < jsinfoset->Length(); ++i) {
         const String::Utf8Value value(Nan::Get(jsinfoset, i).ToLocalChecked());
-        if (0 == _strcmpi(*value, u8"pid")) infoset |= Process::Pid;
-        if (0 == _strcmpi(*value, u8"parent")) infoset |= Process::Parent;
-        if (0 == _strcmpi(*value, u8"name")) infoset |= Process::Name;
-        if (0 == _strcmpi(*value, u8"priority")) infoset |= Process::Priority;
-        if (0 == _strcmpi(*value, u8"threads")) infoset |= Process::Threads;
+        if (0 == std::strcmp(*value, u8"pid")) infoset |= Process::Pid;
+        if (0 == std::strcmp(*value, u8"parent")) infoset |= Process::Parent;
+        if (0 == std::strcmp(*value, u8"name")) infoset |= Process::Name;
+        if (0 == std::strcmp(*value, u8"priority")) infoset |= Process::Priority;
+        if (0 == std::strcmp(*value, u8"threads")) infoset |= Process::Threads;
     }
 
     return infoset;
@@ -128,7 +128,7 @@ void FindWorker::Execute()
 }
 
 void FindWorker::HandleOKCallback()
-{ 
+{
     const int argc = 2;
     Local<Value> argv[argc] = { Nan::Null() };
     0 == pid_ ? argv[1] = PackProcessesList(processes_, infoset_)
@@ -184,12 +184,12 @@ NAN_MODULE_INIT(Wrapper::Initialize)
 
 NAN_METHOD(Wrapper::Enum)
 {
-    if (1 == info.Length() && 
+    if (1 == info.Length() &&
              info[0]->IsFunction()) {
         auto callback = new Callback(info[0].As<Function>());
         Nan::AsyncQueueWorker(new ListWorker(callback, Process::FullInfo));
     }
-    else if (2 == info.Length() && 
+    else if (2 == info.Length() &&
                   info[0]->IsArray() &&
                   info[1]->IsFunction()) {
         uint8_t infoset = UnpackInfoSet(info[0].As<Array>());
