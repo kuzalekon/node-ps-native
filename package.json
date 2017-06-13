@@ -1,6 +1,6 @@
 {
   "name": "ps-native",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Native binding for Node.js for manipulating processes",
   "license": "MIT",
   "main": "index.js",
