@@ -13,16 +13,18 @@ You can use [`npm`](https://github.com/isaacs/npm) to download and install it:
 * GitHub's [`master`](https://github.com/kalexey89/node-ps-native/tree/master) branch: `npm install https://github.com/kalexey89/node-ps-native/tarball/master`
 
 ### Supported OS and platforms
-**OS**:
+**_OS_**:
 * `Windows` *(desktop: Window 7+, server: Windows Server 2008+)*;
 * `Linux` *(any Linux-based distributives)*;
-* ~~MacOS~~ *(Plans...)*
+* ~~MacOS~~ *(Plans...)*.
 
-**Platforms**:
+**_Platforms_**:
 * [`Node.js`](https://nodejs.org) *(greater then version 4)*;
 * [`NW.js`](https://nwjs.io/) *(if NW.js contains a supported version of Node.js)*.
 
 ### Usage
+**Note:** the module must be [installed](#installation) before use.
+
 ``` javascript
 const ps = require('ps-native');
 
@@ -76,7 +78,7 @@ See the [API documentation](https://github.com/kalexey89/node-ps-native/wiki) in
 
 In `ps-native` directory (where its `package.json` resides) run the following:
 
-    npm install mocha
+	npm install mocha
 	npm test
 	
 ### License
