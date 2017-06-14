@@ -112,14 +112,53 @@ Process::List Process::Enum(uint8_t infoset)
     return processes;
 }
 
-bool Process::Find(uint32_t pid, Info& result, uint8_t infoset)
+bool Process::Find(uint32_t pid, Info& process, uint8_t infoset)
 {
-    throw runtime_error(u8"Not implemented");
+    List snapshot = Enum(Pid | infoset);
+    for (auto entry : snapshot) {
+        if (pid == entry.pid) {
+            if (0 != (infoset & Pid))
+                process.pid = entry.pid;
+            if (0 != (infoset & Parent))
+                process.parent = entry.parent;
+            if (0 != (infoset & Name))
+                process.name = entry.name;
+            if (0 != (infoset & Priority))
+                process.priority = entry.priority;
+            if (0 != (infoset & Threads))
+                process.threads = entry.threads;
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
-bool Process::Find(const std::string& mask, List& result, uint8_t infoset)
+bool Process::Find(const std::string& mask, List& processes, uint8_t infoset)
 {
-    throw runtime_error(u8"Not implemented");
+    bool found = false;
+    List snapshot = Enum(Name | infoset);
+    for (auto entry : snapshot) {
+        if (true == std::regex_match(entry.name, std::regex(mask))) {
+            Info process = { 0 };
+            if (0 != (infoset & Pid))
+                process.pid = entry.pid;
+            if (0 != (infoset & Parent))
+                process.parent = entry.parent;
+            if (0 != (infoset & Name))
+                process.name = entry.name;
+            if (0 != (infoset & Priority))
+                process.priority = entry.priority;
+            if (0 != (infoset & Threads))
+                process.threads = entry.threads;
+
+            processes.push_back(process);
+            found = true;
+        }
+    }
+
+    return found;
 }
 
 void Process::Kill(uint32_t pid, int32_t code)

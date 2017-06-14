@@ -1,7 +1,7 @@
-const ps = require('../build/Release/ps-native');
+const ps = require('../index');
 
 try {
-    ps.enum((error,data) => console.log(data));
+    ps.find(3944, (error, process) => console.log(process));
 }
 catch (e) {
     console.error(e);
