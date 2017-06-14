@@ -6,7 +6,7 @@
   "main": "index.js",
   "gypfile": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha tests",
     "install": "prebuild-install || node-gyp rebuild"
   },
   "repository": {
@@ -43,5 +43,10 @@
     "bindings": "^1.2.1",
     "nan": "^2.6.2",
     "prebuild-install": "^2.1.2"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^3.4.2",
+    "prebuild": "^6.1.0"
   }
 }
