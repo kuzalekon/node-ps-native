@@ -206,9 +206,9 @@ NAN_METHOD(Wrapper::Find)
     if (2 == info.Length() &&
              info[0]->IsUint32() &&
              info[1]->IsFunction()) {
-        //uint32_t pid = info[0]->Uint32Value();
-        //auto callback = new Callback(info[1].As<Function>());
-        //Nan::AsyncQueueWorker(new FindWorker(callback, pid, Process::FullInfo));
+        uint32_t pid = info[0]->Uint32Value();
+        auto callback = new Callback(info[1].As<Function>());
+        Nan::AsyncQueueWorker(new FindWorker(callback, pid, Process::FullInfo));
     }
     if (3 == info.Length() &&
              info[0]->IsUint32() &&
