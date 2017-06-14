@@ -163,7 +163,9 @@ bool Process::Find(const std::string& mask, List& processes, uint8_t infoset)
 
 void Process::Kill(uint32_t pid, int32_t code)
 {
-    throw runtime_error(u8"Not implemented");
+    if (-1 == ::kill(pid, code)) {
+        throw runtime_error(GetLastErrorMessage());
+    }
 }
 
 } // namespace ps

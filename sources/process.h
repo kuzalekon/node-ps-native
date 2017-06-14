@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <libgen.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cstdio>
@@ -65,7 +66,12 @@ public:
     static bool Find(uint32_t pid, Info& process, uint8_t infoset = FullInfo);
     static bool Find(const std::string& mask, List& processes, uint8_t infoset = FullInfo);
 
-    static void Kill(uint32_t pid, int32_t code = 0);
+    static void Kill(uint32_t pid,
+#if defined(PS_WIN32)
+                     int32_t code = 0);
+#elif defined(PS_LINUX)
+                     int32_t code = SIGKILL);
+#endif
 }; // class Process
 
 } // ps namespace
