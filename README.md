@@ -19,7 +19,7 @@ You can use [`npm`](https://github.com/isaacs/npm) to download and install it:
 * ~~MacOS~~ *(plans...)*.
 
 **_Platforms_**:
-* [`Node.js`](https://nodejs.org) *(greater then version 4)*;
+* [`Node.js`](https://nodejs.org) *(version >= 4)*;
 * [`NW.js`](https://nwjs.io/) *(if NW.js contains a supported version of Node.js)*.
 
 ### Usage
