@@ -70,7 +70,7 @@ public:
 #if defined(PS_WIN32)
                      int32_t code = 0);
 #elif defined(PS_LINUX)
-                     int32_t code = SIGKILL);
+                     int32_t code = SIGTERM);
 #endif
 }; // class Process
 
