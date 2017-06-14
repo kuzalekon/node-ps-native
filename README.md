@@ -16,7 +16,7 @@ You can use [`npm`](https://github.com/isaacs/npm) to download and install it:
 **_OS_**:
 * `Windows` *(desktop: Window 7+, server: Windows Server 2008+)*;
 * `Linux` *(any Linux-based distributives)*;
-* ~~MacOS~~ *(Plans...)*.
+* ~~MacOS~~ *(plans...)*.
 
 **_Platforms_**:
 * [`Node.js`](https://nodejs.org) *(greater then version 4)*;
@@ -65,7 +65,7 @@ ps.find(/ch.*/, ['pid', 'name'], (error, proclist) => {
  * Kill process
  */
  
-ps.kill(4532, -9 /* SIGKILL */, (error) => {
+ps.kill(4532, ps.SIGTERM, (error) => {
     if (null !== error) throw error;
 });
 ```
