@@ -5,7 +5,7 @@ const ps = require('../index.js');
 
 describe('Enum', () => {
 
-    it('with default fields', (done) => {
+    it('processes with default fields', (done) => {
 
         ps.enum((error, proclist) => {
             expect(error).to.be(null);
@@ -24,8 +24,7 @@ describe('Enum', () => {
 
     });
 
-
-    it('with one field', (done) => {
+    it('processes with one field', (done) => {
 
         ps.enum(['pid'], (error, proclist) => {
             expect(error).to.be(null);
@@ -38,7 +37,7 @@ describe('Enum', () => {
 
     });
 
-    it('with multiply fields', (done) => {
+    it('processes with multiply fields', (done) => {
 
         ps.enum(['pid', 'parent', 'name'], (error, proclist) => {
             expect(error).to.be(null);
