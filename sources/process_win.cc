@@ -29,7 +29,7 @@ const char* GetErrorMessage(uint32_t error)
     static char message[length];
     
     ::ZeroMemory(message, length);
-    ::FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, static_cast<DWORD>(error),
+    ::FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, static_cast<DWORD>(error),
                      MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
                      reinterpret_cast<LPSTR>(&buffer),
                      static_cast<DWORD>(length), nullptr);
