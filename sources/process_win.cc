@@ -23,21 +23,18 @@ string ws2utf8(const wstring& wstr)
     return wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().to_bytes(wstr);
 }
 
-string GetErrorMessage(uint32_t error)
+const char* GetErrorMessage(uint32_t error)
 {
-    LPWSTR buffer = nullptr;
-    ::FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                     FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, static_cast<DWORD>(error),
+    static const size_t length = 150;
+    static char message[length];
+    
+    ::ZeroMemory(message, '\0', length);
+    ::FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, static_cast<DWORD>(error),
                      MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
-                     reinterpret_cast<LPWSTR>(&buffer), 0, nullptr);
+                     reinterpret_cast<LPSTR>(&buffer),
+                     static_cast<DWORD>(length), nullptr);
 
-    wstring message = std::to_wstring(error) + L' ';
-    if (nullptr != buffer) {
-        message += buffer;
-        ::HeapFree(::GetProcessHeap(), HEAP_ZERO_MEMORY, buffer);
-    }
-
-    return ws2utf8(message);
+    return message;
 }
 
 string GetLastErrorMessage()
